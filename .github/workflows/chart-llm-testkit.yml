@@ -1,6 +1,7 @@
 name: chart-llm-testkit
 
 on:
+  workflow_dispatch:
   push:
     paths: ["chart-llm-testkit/**", ".github/workflows/chart-llm-testkit.yml"]
   pull_request:

@@ -1,6 +1,7 @@
 name: od-testkit
 
 on:
+  workflow_dispatch:
   push:
     paths: ["od-testkit/**", ".github/workflows/od-testkit.yml"]
   pull_request:
