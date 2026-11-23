@@ -1,0 +1,79 @@
+# Colour-blob detector with three planted bugs. TC-01 passes; the bugs show up elsewhere:
+#   brightness floor (v_min)  -> TC-02, TC-03 low_light/contrast
+#   min blob area             -> TC-08
+#   red hue band too wide     -> TC-07 (orange shapes detected as red)
+# TC-11 and TC-14 also fail: the half-res previous build scores higher, and the
+# hand-written scores are under-confident.
+#
+#   od-testkit synth examples/synthetic/data
+#   od-testkit run examples/synthetic/config.yaml --out reports/synthetic
+
+name: "Synthetic demo - colour-blob detector with known bugs"
+
+dataset:
+  images: data/images/val
+  names: data/data.yaml
+
+detector:
+  type: shapes            # od_testkit.detectors.ShapeDetector
+
+operating_point:
+  conf: 0.40              # threshold the app uses
+  iou: 0.50
+
+classes_of_interest: null # null = all classes
+min_instances: 100        # below this: "insufficient data"
+
+tests:
+  per_class:
+    recall_min: 0.80
+    precision_min: 0.90
+    recall_ci_lower_min: 0.75
+
+  brightness:
+    factors: [0.6, 1.4]   # -40 % and +40 %
+    max_recall_drop: 0.05
+
+  corruptions:
+    names: [gaussian_noise, shot_noise, motion_blur, defocus_blur, jpeg_compression, contrast, fog, low_light]
+    severities: [1, 2, 3]
+    min_relative_recall: 0.75
+
+  hflip:
+    min_preserved: 0.95
+    iou: 0.8
+
+  scale:
+    factors: [0.75, 1.25]
+    pad_fraction: 0.10
+    max_recall_drop: 0.03
+    min_object_size: 32
+
+  insertion:
+    class: red
+    min_patch_size: 24
+
+  negatives:
+    dir: data/negatives   # orange/purple shapes only
+    max_fp_per_image: 0.05
+    max_class_fp_image_share: 0.10
+
+  small_objects:
+    min_recall_small: 0.70
+    max_gap_to_large: 0.25
+    min_instances: 50
+
+  latency:
+    frames: 300
+    p95_ms: 20
+
+  parity:                 # previous build ran at half resolution
+    reference: {type: shapes, downsample: 2}
+    max_recall_diff: 0.02
+    max_map_diff: 0.01
+
+  label_audit:
+    min_score: 0.8
+
+  calibration:
+    max_ece: 0.10

@@ -1,0 +1,17 @@
+# Same cases with the fake LLM's "careful" profile. Every case should pass;
+# use it to check the kit itself after changing a check.
+#   chart-testkit run examples/fake-careful.yaml --out reports/fake-careful
+
+name: "Demo - fake LLM (careful profile)"
+
+app:
+  type: builtin
+  retries: 0
+  llm: {type: fake, profile: careful}
+
+repeats: 5
+workers: 4
+min_pass_rate: 0.8
+sandbox: {timeout_s: 30}
+
+cases: [../cases/default.yaml]

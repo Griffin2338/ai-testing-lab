@@ -1,0 +1,22 @@
+# Built-in app on Claude. Needs ANTHROPIC_API_KEY (or `ant auth login`).
+#   pip install -e ".[claude,seaborn]"
+#   chart-testkit run examples/claude.yaml --out reports/claude
+# Cost: ~17 cases x 5 repeats (+ TC-12 x 20, TC-11 x 2 per run) ≈ 130 requests.
+
+name: "Built-in app on Claude Opus 5.5"
+
+app:
+  type: builtin
+  retries: 1             # one repair attempt when the code raises
+  llm:
+    type: claude
+    model: claude-opus-5-5
+    effort: medium
+    fallbacks: true      # server-side fallback model on refusals
+
+repeats: 5
+workers: 4
+min_pass_rate: 0.8
+sandbox: {timeout_s: 30}
+
+cases: [../cases/default.yaml]

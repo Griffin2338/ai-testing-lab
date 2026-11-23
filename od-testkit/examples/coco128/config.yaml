@@ -1,0 +1,76 @@
+# YOLO11n exported to ONNX, tested on COCO128 for "person".
+#   python examples/coco128/prepare.py
+#   od-testkit run examples/coco128/config.yaml --out reports/coco128
+# With 128 images most classes stay under min_instances.
+
+name: "YOLO11n (ONNX) on COCO128 - person"
+
+dataset:
+  images: data/coco128/images/train2017   # labels are read from data/coco128/labels/train2017
+
+detector:
+  type: ultralytics
+  weights: yolo11n.onnx
+  imgsz: 640
+
+operating_point:
+  conf: 0.25
+  iou: 0.50
+
+classes_of_interest: [person]
+min_instances: 200
+
+tests:
+  per_class:
+    recall_min: 0.80
+    precision_min: 0.80
+    recall_ci_lower_min: 0.75
+
+  brightness:
+    factors: [0.6, 1.4]
+    max_recall_drop: 0.05
+
+  corruptions:
+    names: [gaussian_noise, motion_blur, jpeg_compression, fog, low_light]
+    severities: [1, 2, 3]
+    min_relative_recall: 0.75
+
+  hflip:
+    min_preserved: 0.90
+    iou: 0.8
+
+  scale:
+    factors: [0.75, 1.25]
+    pad_fraction: 0.10
+    max_recall_drop: 0.05
+    min_object_size: 32
+    min_instances: 100
+
+  insertion:
+    class: person
+    min_patch_size: 48
+
+  negatives:
+    from_dataset: true     # images without a person
+    max_fp_per_image: 0.10
+    min_images: 30
+
+  small_objects:
+    min_recall_small: 0.40
+    max_gap_to_large: 0.50
+    min_instances: 50
+
+  latency:
+    frames: 100            # no limits set, so info only
+
+  parity:                  # ONNX vs original .pt
+    reference: {type: ultralytics, weights: yolo11n.pt, imgsz: 640}
+    max_recall_diff: 0.02
+    max_map_diff: 0.01
+    min_preserved: 0.97
+
+  label_audit:
+    min_score: 0.7
+
+  calibration:
+    max_ece: 0.15

@@ -1,0 +1,47 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "od-testkit"
+version = "0.1.0"
+description = "Acceptance, robustness and metamorphic test suite for object-detection models, written for QA engineers."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+keywords = ["object-detection", "testing", "qa", "metamorphic-testing", "robustness", "yolo"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Framework :: Pytest",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+]
+dependencies = [
+    "numpy>=1.24",
+    "opencv-python-headless>=4.8",
+    "pyyaml>=6.0",
+    "scipy>=1.10",
+    "pytest>=7.4",
+]
+
+[project.optional-dependencies]
+yolo = ["ultralytics>=8.3"]
+dev = ["ruff>=0.5"]
+
+[project.scripts]
+od-testkit = "od_testkit.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["od_testkit"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E731", "B023"]  # small lambdas are clearer here; loop variables are bound via default args

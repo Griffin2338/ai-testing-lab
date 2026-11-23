@@ -1,0 +1,17 @@
+# Scripted fake LLM with known bugs. No API key needed.
+#   chart-testkit run examples/fake.yaml --out reports/fake
+# Switch profile to "careful" to see the same cases pass.
+
+name: "Demo - fake LLM (buggy profile)"
+
+app:
+  type: builtin
+  retries: 0
+  llm: {type: fake, profile: buggy, seed: 0}
+
+repeats: 5
+workers: 4
+min_pass_rate: 0.8
+sandbox: {timeout_s: 30}
+
+cases: [../cases/default.yaml]
