@@ -24,7 +24,7 @@ od-testkit run examples/synthetic/config.yaml --out reports/synthetic
 
 ```bash
 cd chart-llm-testkit
-pip install -e .
+pip install -e ".[seaborn]"
 chart-testkit run examples/fake.yaml --out reports/fake
 ```
 

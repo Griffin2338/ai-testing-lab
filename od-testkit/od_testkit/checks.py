@@ -127,14 +127,15 @@ def per_class(ctx: SuiteContext, cfg: dict) -> TestRecord:
         "point. AP uses all predictions and is shown for reference.",
         f"Recall CI: percentile bootstrap over images ({ctx.n_boot} resamples).",
     ]
+    min_n = int(cfg.get("min_instances", ctx.min_instances))
     if insufficient:
-        notes.append(f"Fewer than {ctx.min_instances} instances (not gated): {', '.join(insufficient)}.")
+        notes.append(f"Fewer than {min_n} instances (not gated): {', '.join(insufficient)}.")
     if failed:
         return _rec("per_class", "fail", f"{len(failed)} class(es) below target: {', '.join(failed)}.",
                     rows, notes)
     if not passed:
         return _rec("per_class", "insufficient",
-                    f"No class has the {ctx.min_instances} instances needed for a verdict.", rows, notes)
+                    f"No class has the {min_n} instances needed for a verdict.", rows, notes)
     return _rec("per_class", "pass",
                 f"{len(passed)} class(es) meet recall ≥ {rmin:.2f} and precision ≥ {pmin:.2f}.", rows, notes)
 

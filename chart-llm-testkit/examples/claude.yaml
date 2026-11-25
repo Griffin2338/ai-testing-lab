@@ -1,7 +1,8 @@
 # Built-in app on Claude. Needs ANTHROPIC_API_KEY (or `ant auth login`).
 #   pip install -e ".[claude,seaborn]"
 #   chart-testkit run examples/claude.yaml --out reports/claude
-# Cost: ~17 cases x 5 repeats (+ TC-12 x 20, TC-11 x 2 per run) ≈ 130 requests.
+# Cost: 145 generations with the default cases (TC-04 makes no calls, TC-11 makes
+# two per run, TC-12 runs 20 times), plus one repair call for each run whose code fails.
 
 name: "Built-in app on Claude Opus 5.5"
 

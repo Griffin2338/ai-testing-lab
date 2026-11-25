@@ -1,6 +1,6 @@
 """Adapter for a detector behind an HTTP endpoint.
 
-Config:
+Config (target is relative to the config file):
     detector:
       type: python
       target: examples/http_detector.py:HttpDetector

@@ -8,20 +8,22 @@ Trafik kamerasında araç ve yaya sayan bir uygulamayı test ederken mAP değeri
 
 ## Testler
 
-| ID | Ne ölçer | Yeni etiket gerekir mi |
+| ID | Ne ölçer | Etiket ister mi |
 |---|---|---|
 | TC-01 | Operasyon eşiğinde sınıf bazlı precision/recall, bootstrap güven aralığı, AP50 ve AP50-95 | evet |
-| TC-02 | Parlaklık ±%40 | hayır, mevcut etiketler |
-| TC-03 | 10 bozulma × 5 şiddet: gürültü, bulanıklık, JPEG, sis, düşük ışık... | hayır, mevcut etiketler |
+| TC-02 | Parlaklık ±%40 | evet |
+| TC-03 | 10 bozulma × 5 şiddet: gürültü, bulanıklık, JPEG, sis, düşük ışık... | evet |
 | TC-04 | Yatay çevirme sonrası aynı tespitler | hayır |
-| TC-05 | 0.75× / 1.25× ölçek ve kenar dolgusu | hayır, mevcut etiketler |
-| TC-06 | Görüntüye nesne yapıştırma: yeni nesne bulunmalı, eskiler değişmemeli | hayır, mevcut etiketler |
-| TC-07 | Hedef nesne içermeyen görüntülerde yanlış pozitif | hayır |
+| TC-05 | 0.75× / 1.25× ölçek ve kenar dolgusu | evet |
+| TC-06 | Görüntüye nesne yapıştırma: yeni nesne bulunmalı, eskiler değişmemeli | evet, yapıştırılacak kutular için |
+| TC-07 | Hedef nesne içermeyen görüntülerde yanlış pozitif | hayır, ayrı bir klasör verirseniz |
 | TC-08 | Küçük / orta / büyük nesnelerde recall | evet |
 | TC-10 | p50 / p95 / p99 gecikme, FPS | hayır |
 | TC-11 | Export paritesi, örneğin ONNX ve PyTorch | evet |
 | TC-12 | Modelin emin olup etiketle çeliştiği tespitlerin listesi | evet |
 | TC-14 | Güven skoru kalibrasyonu (ECE) | evet |
+
+Etiket isteyen testlerin hepsi TC-01'in test setini kullanır. Bozulma, ölçek ve yapıştırma testlerinde kit nesnelerin yeni yerini kendisi hesaplar, bu yüzden yeni etiket gerekmez.
 
 TC-09 (video zamansal tutarlılık) henüz yok. TC-13 (basılı adversarial patch) fiziksel bir deney olduğu için elle yapılıyor.
 
@@ -71,7 +73,7 @@ Bir CPU koşumunda (`person`, conf 0.25) çıkan sonuçlar:
 - TC-11: ONNX ile `.pt` aynı mAP'i veriyor (fark +0.2 puan). Ama tespitlerin %8'i farklı kutuyla çıkıyor. ONNX sabit 640×640 giriş alıyor, PyTorch ise dikdörtgen letterbox kullanıyor.
 - TC-12: COCO etiketlerinde 7 şüpheli yer listeleniyor. Örneğin etiketlenmemiş bir şişe.
 
-Bu eşikler örnek. Amaç YOLO11n'i değerlendirmek değil, kitin neleri yakaladığını göstermek.
+Eşikleri örnek olsun diye seçtim. Bu koşum kitin neleri yakaladığını gösteriyor; YOLO11n'i kendi uygulamanız için değerlendirecekseniz kendi test setinizle koşturun.
 
 ## Kendi modelinizi test etmek
 

@@ -165,8 +165,9 @@ def extract_matplotlib(fig) -> dict[str, Any]:
         }
         for ln in ax.get_lines():
             xs, ys = ln.get_xdata(), ln.get_ydata()
-            if len(xs) < 2 or str(ln.get_label()).startswith("_child") and len(set(map(str, ys))) <= 1:
-                continue  # skip axhline/axvline style helpers
+            helper = str(ln.get_label()).startswith("_child") and len(set(map(str, ys))) <= 1
+            if len(xs) < 2 or helper:
+                continue  # axhline-style reference lines
             a["lines"].append({"name": ln.get_label() if not str(ln.get_label()).startswith("_") else "",
                                "x": _x_values(xs, is_date), "y": [_num(v) for v in ys]})
         for coll in ax.collections:

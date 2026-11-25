@@ -246,6 +246,9 @@ def _relation(kind: str, rel: dict, a: dict, b: dict, tol: float = 0.005) -> tup
     factor = float(rel.get("factor", 1.0)) if kind == "scale" else 1.0
     if set(ca) != set(cb):
         return False, f"categories changed: {sorted(set(ca) ^ set(cb))[:5]}"
+    empty = sorted(k for k in ca if ca[k] is None or cb[k] is None)
+    if empty:
+        return False, f"no value for {empty[:5]} in one of the charts"
     bad = [k for k in ca if abs(cb[k] - ca[k] * factor) > tol * max(abs(ca[k] * factor), 1e-9)]
     if bad:
         return False, f"{len(bad)} value(s) broke the relation, e.g. {bad[0]}: {ca[bad[0]]:.4g} -> {cb[bad[0]]:.4g}"

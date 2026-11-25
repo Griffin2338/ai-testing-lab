@@ -24,7 +24,7 @@ jobs:
       - name: Install
         run: pip install -e ".[dev]"
       - name: Lint
-        run: ruff check od_testkit tests
+        run: ruff check od_testkit tests examples
       - name: Unit and end-to-end tests of the kit
         run: pytest -q
 

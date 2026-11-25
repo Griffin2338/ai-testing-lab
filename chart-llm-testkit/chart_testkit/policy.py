@@ -15,9 +15,11 @@ FORBIDDEN_CALLS = {
 }
 # writing files or pulling data from elsewhere: the chart must come from `df`
 FORBIDDEN_METHODS = {
-    "savefig", "write_image", "write_html", "write_json", "to_csv", "to_excel", "to_pickle",
-    "to_parquet", "to_json", "to_sql", "read_csv", "read_excel", "read_json", "read_sql",
-    "read_html", "read_parquet", "read_pickle", "read_clipboard", "show_in_browser",
+    "savefig", "write_image", "write_html", "write_json",
+    "to_csv", "to_excel", "to_pickle", "to_parquet", "to_json", "to_sql", "to_feather", "to_hdf", "to_xml",
+    "read_csv", "read_table", "read_fwf", "read_excel", "read_json", "read_sql", "read_html", "read_xml",
+    "read_parquet", "read_feather", "read_orc", "read_hdf", "read_pickle", "read_stata", "read_sas",
+    "read_spss", "read_clipboard",
 }
 
 

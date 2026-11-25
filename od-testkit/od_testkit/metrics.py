@@ -161,7 +161,10 @@ def evaluate(
         j = cidx[c]
         tp, fp, gt = int(tp_m[:, j].sum()), int(fp_m[:, j].sum()), int(gt_m[:, j].sum())
         p, r = _safe_div(tp, tp + fp), _safe_div(tp, gt)
-        f1 = _safe_div(2 * p * r, p + r) if not (np.isnan(p) or np.isnan(r)) else float("nan")
+        if np.isnan(p) or np.isnan(r):
+            f1 = float("nan")
+        else:
+            f1 = 2 * p * r / (p + r) if p + r else 0.0
         per_class[c] = ClassStats(
             class_id=c,
             name=class_names[c],

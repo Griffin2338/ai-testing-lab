@@ -2,7 +2,7 @@
 
 Bir tabloyu ve "sektörlere göre toplam işlem hacmini göster" gibi bir isteği alıp LLM ile grafik çizen uygulamalar için test kiti. Demo verisi uydurma hisse senedi işlemlerinden oluşuyor (`chart_testkit/datasets.py`).
 
-Bu tür uygulamalarda oracle bulmak zor değil, çünkü veri elinizde. Grafiğin göstermesi gereken sayıları pandas ile hesaplayabilir, çizilen grafikten geri okuduğunuz sayılarla karşılaştırabilirsiniz. Kit bunu yapıyor. Üretilen kodu ayrı bir süreçte çalıştırıyor, matplotlib veya plotly figürünü okuyup bir "chart spec"e çeviriyor, sonra veriyle ve tasarım kurallarıyla kıyaslıyor. Her istek birden çok kez koşuyor, çünkü LLM çıktısı her seferinde aynı olmuyor.
+Bu tür uygulamalarda oracle'ı verinin kendisi sağlar. Grafiğin göstermesi gereken sayıları pandas ile hesaplayabilir, çizilen grafikten geri okuduğunuz sayılarla karşılaştırabilirsiniz. Kit bunu yapıyor. Üretilen kodu ayrı bir süreçte çalıştırıyor, matplotlib veya plotly figürünü okuyup bir "chart spec"e çeviriyor, sonra veriyle ve tasarım kurallarıyla kıyaslıyor. Her istek birden çok kez koşuyor, çünkü LLM çıktısı her seferinde aynı olmuyor.
 
 *English summary at the bottom.*
 
@@ -72,14 +72,14 @@ pip install -e ".[claude,seaborn]"   # Claude ile
 `FakeLLM` sadece bu case'lerdeki istekleri anlayan, kural tabanlı bir LLM taklidi. API anahtarı gerektirmez. İki profili var:
 
 - `careful` doğru kod yazar. Bütün case'ler geçmeli; kiti değiştirdikten sonra kontrol için kullanılır.
-- `buggy` gerçek LLM çıktısında görülen hataları yapar: ekseni sıfırdan başlatmamak, veri uydurmak, sütun adındaki talimata uymak, `traded_value_prev` sütununu seçmek, seaborn'un varsayılan ortalamasını kullanmak, uzun etiketleri döndürmemek, "Date" gibi belirsiz eksen adı yazmak ve bazen toplam yerine ortalama almak.
+- `buggy` gerçek LLM çıktısında görülen hataları yapar: ekseni sıfırdan başlatmamak, veri uydurmak, sütun adındaki talimata uymak, dosyayı ev klasörüne kaydetmek, internetten kur çekmek, Top-N'i ters sıralamak, `traded_value_prev` sütununu seçmek, seaborn'un varsayılan ortalamasını kullanmak, uzun etiketleri döndürmemek, "Date" gibi belirsiz eksen adı yazmak, Türkçe isteği anlamamak ve arada bir toplam yerine ortalama almak.
 
 ```bash
 chart-testkit run examples/fake.yaml --out reports/fake
 chart-testkit run examples/fake-careful.yaml --out reports/fake-careful
 ```
 
-Bu makinedeki sonuç: buggy profilde 17 case'ten 13'ü kaldı, careful profilde hepsi geçti. Bir koşum dört işçiyle yaklaşık 3 dakika sürüyor.
+Bir Windows bilgisayarda buggy profilde 17 case'ten 13'ü kaldı, careful profilde hepsi geçti. Bir koşum dört işçiyle 3 dakika kadar sürdü.
 
 ## Claude ile
 
@@ -88,7 +88,7 @@ export ANTHROPIC_API_KEY=...        # ya da: ant auth login
 chart-testkit run examples/claude.yaml --out reports/claude
 ```
 
-Varsayılan model `claude-opus-5-5`, `effort: medium`. Model bir isteği güvenlik gerekçesiyle reddederse, sunucu tarafında yedek bir modele geçiliyor (`fallbacks: default`); istemiyorsanız config'te `fallbacks: false` yapın. Bir koşum yaklaşık 130 API isteği gönderir.
+Varsayılan model `claude-opus-5-5`, `effort: medium`. Model bir isteği güvenlik gerekçesiyle reddederse, sunucu tarafında yedek bir modele geçiliyor (`fallbacks: default`); istemiyorsanız config'te `fallbacks: false` yapın. Varsayılan case'lerle bir koşum 145 üretim isteği gönderir; kodu hata veren her koşu için bir onarım isteği daha eklenir.
 
 Tek bir isteği denemek için:
 
@@ -107,7 +107,7 @@ app:
   kwargs: {url: "http://localhost:8000/chart-code"}
 ```
 
-Kit, dönen kodu kendi sandbox'ında çalıştırır. Uygulamanız kodu kendisi çalıştırıp sadece resim döndürüyorsa, test modunda kodu da döndürmesini isteyin. Resimden sayı okumak (DePlot, VLM) çok daha güvenilmez bir yoldur.
+Kit, dönen kodu kendi sandbox'ında çalıştırır. Uygulamanız kodu kendisi çalıştırıp sadece resim döndürüyorsa, test modunda kodu da döndürmesini isteyin. Resimden sayı okumak da mümkün (DePlot, VLM), ama okuma hatası test sonucuna karışır.
 
 ## Dosyalar
 

@@ -1,6 +1,6 @@
 """Adapter for a chart app behind an HTTP endpoint.
 
-Config:
+Config (target is relative to the config file):
     app:
       type: python
       target: examples/http_app.py:HttpChartApp
